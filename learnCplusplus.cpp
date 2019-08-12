@@ -220,12 +220,21 @@ void study_move_vector()
     print_value(y);
     print_value(z);
     cout << "x=" << x.size() << " y=" << y.size() << " z=" << z.size() << '\n';
+    //cout << "x=" << x.size() << " y=" << " z=" << z.size() << '\n';
     z = x;
     y = move(x);
     cout << "x=" << x.size() << " y=" << y.size() << " z=" << z.size() << '\n'; 
     print_value(x);
     print_value(y);
     print_value(z);
+
+    vector<int> && h{41,42,43};
+    print_value(h);
+    vector<int> k = move(h);
+    print_value(h);
+    print_value(k);
+    vector<int> & m = k;
+    print_value(m);
 }
 
 
