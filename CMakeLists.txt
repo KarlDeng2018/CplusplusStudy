@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8.9)
+project (learnCplusplus)
+set(TARGET_PROGRAME_NAME learnCplusplus)
+add_executable(learCplusplus learnCplusplus.cpp)
+target_compile_options(learCplusplus PRIVATE  "-std=c++11")
+#target_compile_options(learCplusplus PRIVATE  "-std=c++11 -Wgnu-alignof-expression")
