@@ -237,6 +237,52 @@ void study_move_vector()
     print_value(m);
 }
 
+template<typename T>
+void t_swap(T& a, T&b) // "perfect swap" (almost)
+{
+    cout << " a[" << &a << "]=" << a << '\n';
+    cout << " b[" << &b << "]=" << b << '\n';
+
+    T tmp {static_cast<T&&>(a)}; // the initialization may write to a
+    cout << " a[" << &a << "]=" << a << '\n';
+    cout << " tmp[" << &tmp << "]=" << tmp << '\n';
+    a = static_cast<T&&>(b); // the assignment may write to b
+    cout << " a[" << &a << "]=" << a << '\n';
+    cout << " b[" << &b << "]=" << b << '\n';
+    b = static_cast<T&&>(tmp); // the assignment may write to tmp
+    cout << " tmp[" << &tmp << "]=" << tmp << '\n';
+    cout << " b[" << &b << "]=" << b << '\n';
+    b = move(tmp);
+    cout << " tmp[" << &tmp << "]=" << tmp << '\n';
+ /*
+ * The result value of static_cast<T&&>(x) is an rvalue of type T&& for x. An further operation that is optimized for rvalues can now use its optimization for x. 
+ * In particular, if a type T has a move constructor or move assignment, it will be used. 
+ * But if the type T has no "move" related features there is nothing difference with normal value or lvaue.
+ * So the preparation of value type should be with aim in optimization.
+ */
+}
+
+void study_lrvalue()
+{
+    int x{1};
+    int y{2};
+    int z{3};
+
+    int &&xx = static_cast<int&&>(x);
+    cout << " x[" << &x << "]=" << x << '\n';
+    cout << " y[" << &y << "]=" << y << '\n';
+    cout << " z[" << &z << "]=" << z << '\n';
+    cout << "xx[" << &xx << "]=" << xx << '\n';
+
+    int xm = move(xx);
+    cout << "xm[" << &xm << "]=" << xm << '\n';
+    cout << " x[" << &x << "]=" << x << '\n';
+    cout << " y[" << &y << "]=" << y << '\n';
+    cout << " z[" << &z << "]=" << z << '\n';
+    cout << "xx[" << &xx << "]=" << xx << '\n';
+    t_swap(x, y);    
+}
+
 
 int main()
 {
@@ -251,4 +297,5 @@ int main()
     study_move_builtin();
     study_move_Vector();
     study_move_vector();
+    study_lrvalue();
 }
