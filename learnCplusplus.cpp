@@ -283,7 +283,126 @@ void study_lrvalue()
     t_swap(x, y);    
 }
 
+void structures_holes()
+{
 
+    struct Readout1
+    {
+        char hour;
+        int value;
+        char seq;
+    };
+    struct Readout2
+    {
+        int value;
+        char hour;
+        char seq;
+    };
+    cout << "sizeof(Readout1)=" << sizeof(Readout1) << " sizeof(Readout2)=" << sizeof(Readout2) << '\n';
+
+}
+
+struct Point
+{
+    double x;
+    double y;
+};
+struct Points
+{
+    vector<Point> elem;// must contain at least one Point
+    Points(Point p0)
+    {
+        elem.push_back(p0);
+    }
+    Points(Point p0, Point p1)
+    {
+        elem.push_back(p0);
+        elem.push_back(p1);
+    }
+};
+Point g_point_x;// automatically be initialized to (0,0)
+void struct_construct()
+{
+    Point point_x; // danger: uninitialized if in local scope
+    Point p1 {}; // default construction:
+    Point p2 {100}; // the second member is default constructed: {1, {}}; that is {100, 0}
+    Point point_y {100, 200};
+    cout << "g_point_x(" << g_point_x.x << "," << g_point_x.y << ")" << "\n";
+    cout << "p1(" << p1.x << "," << p1.y << ")" << "\n";
+    cout << "p2(" << p2.x << "," << p2.y << ")" << "\n";
+    cout << "point_x(" << point_x.x << "," << point_x.y << ")" << "\n";
+    cout << "point_y(" << point_y.x << "," << point_y.y << ")" << "\n";
+    //Points x0;
+    Points x1{ {100,200}};
+    Points x2{{100, 200}, {300,400}};
+    cout << "x1 has " << x1.elem.size() << " points, and x2 has " << x2.elem.size() << " points." << "\n";
+}
+
+template<typename T>
+void mycopy(T* to,  const T* from, int count)
+{
+    if (is_pod<T>::value)
+    {
+        cout << "is pod" << "\n";
+        memcpy(to,from,count*sizeof(T));
+    }
+    else
+    {
+        cout << "is not pod" << "\n";
+        for (int i=0; i!=count; ++i)
+            to[i]=from[i];
+    }
+}
+
+void plain_old_data()
+{
+    int from[] {1,2,3,4,5,6};
+    int to[] {7,8,9,10,11,12};
+    mycopy(to, from, 6);
+
+    
+    Point p_x1[] {{100, 200}, {222,333}};
+    Point p_x2[] {{444, 200}, {444,333}, {555,777}};
+    mycopy(p_x2, p_x1, 2);
+    
+    Points x1[] {{ {100,200}}};
+    Points x2[] {{{100, 200}, {300,400}}};    
+    mycopy(x2, x1, 1);
+}
+
+void enumerations()
+{
+    enum class Class_Traffic_light:int { red, yellow, green };
+    enum class Class_Warning:char { green, yellow, orange, red };// fire alert levels
+
+    enum Plain_Traffic_light { e1_red, e1_yellow, e1_green }; // the default type is int
+    enum Plain_Warning:char { green, yellow, orange, red }; // fire alert levels
+
+    Class_Traffic_light class_Traffic_light {Class_Traffic_light::red};
+    cout << static_cast<int>(class_Traffic_light) << "\n";
+    Plain_Traffic_light plain_Traffic_light {Plain_Traffic_light::e1_red};
+    cout << plain_Traffic_light << "\n";
+}
+
+void switch_case()
+{
+    enum class Vessel {cup, glass, goblet, chalice};
+
+    Vessel v {Vessel::chalice};
+    switch (v)
+    {
+        case Vessel::cup:
+            int x;
+            x = 0;
+            break;
+        case Vessel::glass:
+            break;
+        case Vessel::goblet:
+            break;
+        //case Vessel::chalice:
+          //  break;
+    }
+}
 int main()
 {
     std::cout << "Hello, World!\n";
@@ -298,4 +417,8 @@ int main()
     study_move_Vector();
     study_move_vector();
     study_lrvalue();
+    structures_holes();
+    struct_construct();
+    plain_old_data();
+    enumerations();
 }
